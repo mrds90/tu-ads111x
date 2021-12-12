@@ -75,7 +75,7 @@ void ADS111x_SetMode(ads111x_obj_t *ptr_asd111x, ads111x_mode_t mode) {
 }
 
 void ADS111x_SetComparatorMode(ads111x_obj_t *ptr_asd111x, ads111x_comp_mode_t mode) {
-    if(ptr_asd111x->device != ADS1113) {
+    if(ptr_asd111x->device >= ADS1114 && ptr_asd111x->device <= ADS1115) {
         ADS111x_SetConfiguration(ptr_asd111x, ADS111X_CONFIG_FIELD_COMP_MODE, mode);
     }
 }
@@ -107,7 +107,6 @@ static uint16_t ADS111x_ReadRegister(uint8_t i2c_address, uint8_t reg) {
     uint16_t value = 0;
     ads111x_i2c.WriteRead(i2c_address, reg, &value);
     return value;
-  
 }
 
 static void ADS111x_SetConfiguration(ads111x_obj_t *ptr_asd111x, ads111x_config_field_t field, uint8_t field_config) {

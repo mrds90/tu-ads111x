@@ -4,7 +4,7 @@
 
 // #include "ads111x_driver_private.h"
 
-ads111x_obj_t ads111x_obj;
+static ads111x_obj_t ads111x_obj;
 
 void dummy_i2c_init(void) {
     printf("dummy_i2c_init\n");
@@ -16,6 +16,9 @@ void dummy_i2c_write(uint8_t name1, uint8_t name2, uint16_t name3) {
 
 void dummy_i2c_read(uint8_t name1, uint8_t name2, uint16_t *name3) {
     printf("dummy_i2c_read\n");
+
+    *name3 = 0x1234;
+    
 }
 
 void setUp(void) {
@@ -55,4 +58,23 @@ void test_ADS111x_SetDataRate(void) {
     TEST_ASSERT_EQUAL(0xFFDF, ads111x_obj.configuration);
 }
 
+void test_ADS111x_Read(void) {
+    // ADS111x_ReadRegister_ExpectAndReturn(ADS111X_ADDR_0, ADS111X_CONVERSION_REG, 0x1234); // Not working, Ask why
+    int16_t data = ADS111x_Read(&ads111x_obj);
+    TEST_ASSERT_EQUAL(0x1234,data);
+}
 
+void test_ADS111x_SetComparatorMode(void) {
+    // ADS111x_ReadRegister_ExpectAndReturn(ADS111X_ADDR_0, ADS111X_CONVERSION_REG, 0x1234); // Not working, Ask why
+    ads111x_obj.configuration = 0xFFFF;
+    ADS111x_SetComparatorMode(&ads111x_obj, ADS111X_COMP_MODE_TRADITIONAL);
+    TEST_ASSERT_EQUAL(0xFFEF, ads111x_obj.configuration);
+}
+
+void test_ADS111x_SetComparatorModeWithInvalidDevice(void) {
+    // ADS111x_ReadRegister_ExpectAndReturn(ADS111X_ADDR_0, ADS111X_CONVERSION_REG, 0x1234); // Not working, Ask why
+    ads111x_obj.configuration = 0xFFFF;
+    ads111x_obj.device = ADS1115 + 1;
+    ADS111x_SetComparatorMode(&ads111x_obj, ADS111X_COMP_MODE_TRADITIONAL);
+    TEST_ASSERT_EQUAL(0xFFFF, ads111x_obj.configuration);
+}
