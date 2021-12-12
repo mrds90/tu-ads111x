@@ -52,29 +52,54 @@ void test_ADS111x_SetMultiplexer(void) {
     TEST_ASSERT_EQUAL(0xCFFF, ads111x_obj.configuration);
 }
 
+/**
+ * @brief Test if Data Rate function works properly looking for the configuration register
+ * 
+ */
 void test_ADS111x_SetDataRate(void) {
     ads111x_obj.configuration = 0xFFFF;
     ADS111x_SetDataRate(&ads111x_obj, ADS111X_DATA_RATE_475SPS);
     TEST_ASSERT_EQUAL(0xFFDF, ads111x_obj.configuration);
 }
 
+/**
+ * @brief Test if Read function works properly looking for the return value of the read function
+ * 
+ */
 void test_ADS111x_Read(void) {
     // ADS111x_ReadRegister_ExpectAndReturn(ADS111X_ADDR_0, ADS111X_CONVERSION_REG, 0x1234); // Not working, Ask why
     int16_t data = ADS111x_Read(&ads111x_obj);
     TEST_ASSERT_EQUAL(0x1234,data);
 }
 
+/**
+ * @brief Test if the SetComparatorMod function works properly looking for the configuration register
+ * 
+ */
 void test_ADS111x_SetComparatorMode(void) {
-    // ADS111x_ReadRegister_ExpectAndReturn(ADS111X_ADDR_0, ADS111X_CONVERSION_REG, 0x1234); // Not working, Ask why
     ads111x_obj.configuration = 0xFFFF;
     ADS111x_SetComparatorMode(&ads111x_obj, ADS111X_COMP_MODE_TRADITIONAL);
     TEST_ASSERT_EQUAL(0xFFEF, ads111x_obj.configuration);
 }
 
+/**
+ * @brief Test if the SetComparatorMod function ignore the parameter if device is invalid
+ * 
+ */
 void test_ADS111x_SetComparatorModeWithInvalidDevice(void) {
-    // ADS111x_ReadRegister_ExpectAndReturn(ADS111X_ADDR_0, ADS111X_CONVERSION_REG, 0x1234); // Not working, Ask why
     ads111x_obj.configuration = 0xFFFF;
     ads111x_obj.device = ADS1115 + 1;
+    ADS111x_SetComparatorMode(&ads111x_obj, ADS111X_COMP_MODE_TRADITIONAL);
+    TEST_ASSERT_EQUAL(0xFFFF, ads111x_obj.configuration);
+}
+
+/**
+ * @brief Test if the SetComparatorMod function ignore the parameter if device has not comparator
+ * 
+ */
+void test_ADS111x_SetComparatorModeWithADS1113Device(void) {
+    ads111x_obj.configuration = 0xFFFF;
+    ads111x_obj.device = ADS1113;
     ADS111x_SetComparatorMode(&ads111x_obj, ADS111X_COMP_MODE_TRADITIONAL);
     TEST_ASSERT_EQUAL(0xFFFF, ads111x_obj.configuration);
 }
