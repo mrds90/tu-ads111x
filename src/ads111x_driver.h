@@ -14,7 +14,6 @@
 #include <stdint.h>
 #include <stddef.h>
 
-
 /*=====[C++ - begin]=========================================================*/
 
 #ifdef __cplusplus
